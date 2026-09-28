@@ -31,3 +31,15 @@ Hệ thống bao gồm các dịch vụ:
   - Thành công: Trả về HTTP 200 kèm JWT access token.
   - Thất bại: Trả về HTTP 401 Unauthorized kèm thông điệp chung `Bad credentials` để bảo mật.
 - Kiểm thử toàn diện qua JUnit 5 Mockito cho các kịch bản thành công và thất bại.
+
+---
+
+## [Bài tập 4] Cấu hình Routing tại API Gateway
+- Khởi tạo dự án `gateway-service` (Spring Boot Java 21, Spring Cloud Gateway WebFlux/Netty cổng 8888, không sử dụng `spring-boot-starter-web`).
+- Cấu hình Route Predicates & Filters trong `application.yml`:
+  - Route `/identity/**` trỏ về `http://localhost:8080`.
+  - Filter `StripPrefix=1` loại bỏ tiền tố `/identity` trước khi chuyển tiếp request tới `identity-service`.
+  - Route mô phỏng `/api/products/**` trỏ về `http://localhost:8081`.
+- Kiểm thử:
+  - `POST http://localhost:8888/identity/api/auth/login` -> chuyển tiếp thành công đến `identity-service:8080/api/auth/login`.
+  - Gọi sai tiền tố `/wrong-path/**` -> Gateway trả về HTTP 404 Not Found.
